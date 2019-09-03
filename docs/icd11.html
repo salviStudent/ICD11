@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>icd11.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>icd11.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Actual implementation of the icd11 api wrapper</p>
+<p>We currently cover the following endpoints:</p>
+<ol>
+<li>
+<p>/icd/entity</p>
+</li>
+<li>
+<p>/icd/entity/{id}</p>
+</li>
+<li>
+<p>/icd/entity/search</p>
+</li>
+</ol>
+<p>std library imports: Pool object from multiprocessing module</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>outside dependencies: Session object from the requests module</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">Session</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>in house code: constants, utility functions and error files.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">constants</span> <span class="kn">as</span> <span class="nn">consts</span>
+<span class="kn">import</span> <span class="nn">errors</span> <span class="kn">as</span> <span class="nn">ers</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">update_token</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Retrieve data for a single icd11 code</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">icd11_data</span><span class="p">(</span><span class="n">id_</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">extract_id_data</span><span class="p">(</span><span class="n">id_</span><span class="p">,</span> <span class="n">consts</span><span class="o">.</span><span class="n">ENTITY_ID_URL</span><span class="p">)</span>
+
+<span class="sd">&#39;&#39;&#39;def icd11_search(query, subtrees_filter = None, flexi_search =False,</span>
+<span class="sd">                 chapter_filter = None, flat_results = True,</span>
+<span class="sd">                 props_to_search = None, release_id = None):</span>
+<span class="sd">    pass&#39;&#39;&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Return data for a list of icd11 codes</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">batch_icd11_data</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">thread_count</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thread_count</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>thread_count needs to be an integer for the pool object
+to work. This throws a ValueError to signify that the
+given thread count is not the correct type</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;thread_count needs to be of type int, you provided: &#39;</span><span class="p">,</span>
+                         <span class="nb">type</span><span class="p">(</span><span class="n">thread_count</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">thread_count</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>thread_count needs to be greater than 0 to do any actual
+work. Raises a ValueError </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You can not specify&#39;</span><span class="p">,</span> <span class="n">thread_count</span><span class="p">,</span>
+                         <span class="s1">&#39;threads as thread_count&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">thread_count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">thread_count</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">icd11_data</span><span class="p">,</span><span class="n">ids</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">icd11_data</span><span class="p">,</span><span class="n">ids</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">icd11_linearization_data</span><span class="p">(</span><span class="n">icd11_code</span><span class="p">,</span><span class="n">linear</span><span class="o">=</span><span class="s1">&#39;mms&#39;</span><span class="p">,</span> <span class="n">residual</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">residual</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">residual</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expected residual code in string format you passed:&#39;</span><span class="p">,</span>
+                         <span class="nb">type</span><span class="p">(</span><span class="n">residual</span><span class="p">))</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">consts</span><span class="o">.</span><span class="n">LINEAR_ID_RESIDUAL_URL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">linear</span><span class="o">=</span><span class="n">linear</span><span class="p">,</span><span class="n">residual</span><span class="o">=</span><span class="n">residual</span><span class="p">)</span>
+    
+    <span class="n">url</span> <span class="o">=</span> <span class="n">consts</span><span class="o">.</span><span class="n">LINEAR_ID_URL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">linear</span><span class="o">=</span><span class="n">linear</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">extract_id_data</span><span class="p">(</span><span class="n">icd11_code</span><span class="p">,</span><span class="n">url</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">icd11_release_data</span><span class="p">(</span><span class="n">icd11_code</span><span class="p">,</span><span class="n">release_id</span><span class="p">,</span><span class="n">linear</span><span class="o">=</span><span class="s1">&#39;mms&#39;</span><span class="p">,</span><span class="n">residual</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">pass</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">icd11_linearization_search</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="n">release_id</span><span class="p">,</span><span class="n">linear</span><span class="o">=</span><span class="s1">&#39;mms&#39;</span><span class="p">):</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">consts</span><span class="o">.</span><span class="n">LINEAR_SEARCH</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">release_id</span><span class="o">=</span><span class="n">release_id</span><span class="p">,</span> <span class="n">linear</span> <span class="o">=</span> <span class="n">linear</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">extract_search_data</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">query</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>End point for api calls that have an icd11 code at the end</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">extract_id_data</span><span class="p">(</span><span class="n">icd11_code</span><span class="p">,</span><span class="n">url</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">print</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">icd11_code</span><span class="o">=</span><span class="n">icd11_code</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">icd11_code</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expected icd11 code in string format you passed:&#39;</span><span class="p">,</span>
+                         <span class="nb">type</span><span class="p">(</span><span class="n">icd11_code</span><span class="p">))</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">SESH</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">icd11_code</span><span class="o">=</span><span class="n">icd11_code</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ers</span><span class="o">.</span><span class="n">ICD11CodeError</span><span class="p">(</span><span class="s1">&#39;Could not find icd11 code: &#39;</span> <span class="o">+</span> <span class="n">icd11_code</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">401</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ers</span><span class="o">.</span><span class="n">AuthorizationError</span><span class="p">(</span><span class="s1">&#39;You are not authorized&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">extract_search_data</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">subtrees_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">flexi_search</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                         <span class="n">chapter_filter</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">flat_results</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+                         <span class="n">props_to_search</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">release_id</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+     <span class="n">new_url</span> <span class="o">=</span> <span class="n">url</span> <span class="o">+</span> <span class="s1">&#39;?q=&#39;</span> <span class="o">+</span> <span class="n">query</span>
+     <span class="k">if</span> <span class="n">subtrees_filter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+         <span class="n">new_url</span> <span class="o">=</span> <span class="n">new_url</span> <span class="o">+</span> <span class="s1">&#39;&amp;subtreesFilter=&#39;</span> <span class="o">+</span> <span class="n">subtrees_filter</span>
+     <span class="k">if</span> <span class="n">flexi_search</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+         <span class="n">new_url</span> <span class="o">=</span>  <span class="n">new_url</span> <span class="o">+</span> <span class="s1">&#39;&amp;useFlexisearch=&#39;</span> <span class="o">+</span> <span class="n">flexi_search</span>
+     <span class="k">print</span><span class="p">(</span><span class="n">new_url</span><span class="p">)</span>
+     <span class="n">response</span> <span class="o">=</span> <span class="n">SESH</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">new_url</span><span class="p">)</span>
+     <span class="k">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+     <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">icd11_foundation_search</span><span class="p">(</span><span class="n">query</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">extract_search_data</span><span class="p">(</span><span class="n">consts</span><span class="o">.</span><span class="n">ENTITY_SEARCH_URL</span><span class="p">,</span><span class="n">query</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>initializes the session object each of the api calls use and sets
+the correct values for it</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">SESH</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
+<span class="n">update_token</span><span class="p">(</span><span class="n">SESH</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

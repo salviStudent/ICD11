@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>utils.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>utils.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">constants</span> <span class="kn">as</span> <span class="nn">consts</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Sets token for the session object used to make all the api calls.</p>
+<p>Assumes you have the token in your working directory, alternatively you can supply a path to your token with the file_name parameter.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">update_token</span><span class="p">(</span><span class="n">sesh</span><span class="p">,</span><span class="n">file_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">file_name</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;config.json&#39;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">))</span>
+    <span class="n">consts</span><span class="o">.</span><span class="n">TOKEN_ENDPOINT</span> <span class="o">=</span> <span class="s1">&#39;https://icdaccessmanagement.who.int/connect/token&#39;</span>
+    <span class="n">token_response</span> <span class="o">=</span> <span class="n">sesh</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;https://icdaccessmanagement.who.int/connect/token&#39;</span><span class="p">,</span>
+                               <span class="n">data</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;client_id&#39;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ClientId&quot;</span><span class="p">],</span>
+                                      <span class="s1">&#39;client_secret&#39;</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ClientSecret&quot;</span><span class="p">],</span>
+                                      <span class="s1">&#39;scope&#39;</span><span class="p">:</span> <span class="s1">&#39;icdapi_access&#39;</span><span class="p">,</span>
+                                      <span class="s1">&#39;grant_type&#39;</span><span class="p">:</span> <span class="s1">&#39;client_credentials&#39;</span><span class="p">},</span>
+                               <span class="n">verify</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">token_response</span><span class="p">[</span><span class="s1">&#39;access_token&#39;</span><span class="p">]</span>
+    <span class="n">sesh</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span>  <span class="s1">&#39;Bearer &#39;</span><span class="o">+</span> <span class="n">token</span><span class="p">,</span>
+                         <span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;API-Version&#39;</span><span class="p">:</span><span class="s1">&#39;v2&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;Accept-Language&#39;</span><span class="p">:</span> <span class="s1">&#39;en&#39;</span><span class="p">})</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>constants.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>constants.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h6></h6>
+<pre><code>                                                                         #
+           All of the urls we provide a wrapper for                      #
+                                                                         #
+</code></pre>
+<h6></h6>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">BASE_URL</span> <span class="o">=</span> <span class="s1">&#39;http://id.who.int/icd/&#39;</span>
+
+
+<span class="n">ENTITY_URL</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="s1">&#39;entity/&#39;</span>
+<span class="n">ENTITY_ID_URL</span> <span class="o">=</span> <span class="n">ENTITY_URL</span> <span class="o">+</span> <span class="s1">&#39;{icd11_code}&#39;</span>
+<span class="n">ENTITY_SEARCH_URL</span> <span class="o">=</span> <span class="n">ENTITY_URL</span> <span class="o">+</span> <span class="s1">&#39;search&#39;</span> 
+
+
+<span class="n">LINEAR_URL</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="s1">&#39;release/11/{linear}&#39;</span>
+<span class="n">LINEAR_ID_URL</span> <span class="o">=</span> <span class="n">LINEAR_URL</span> <span class="o">+</span> <span class="s1">&#39;/{{icd11_code}}&#39;</span>
+<span class="n">LINEAR_ID_RESIDUAL_URL</span> <span class="o">=</span> <span class="n">LINEAR_ID_URL</span> <span class="o">+</span> <span class="s1">&#39;/{residual}&#39;</span>
+<span class="n">LINEAR_SEARCH</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="s1">&#39;release/11/{release_id}/{linear}/search&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <h6></h6>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <h6></h6>
+<pre><code>                                                                         #
+</code></pre>
+<p>The DataItem class we use for preprocessing. Just a lightweight class that  #
+ allows us to keep going with the download in case something fails           #</p>
+<h6></h6>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">DataItem</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;DataItem&#39;</span><span class="p">,[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;url&#39;</span><span class="p">,</span><span class="s1">&#39;content&#39;</span><span class="p">])</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <h6></h6>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <h6></h6>
+<pre><code>                                                                         #
+                    Miscellaneous                                        #
+                                                                         #
+</code></pre>
+<h6></h6>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">TOKEN_ENDPOINT</span> <span class="o">=</span> <span class="s1">&#39;https://icdaccessmanagement.who.int/connect/token&#39;</span>
+<span class="n">RATE_LIMIT</span> <span class="o">=</span> <span class="mf">0.5</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <h6></h6>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
